@@ -48,6 +48,7 @@ namespace TagPan
             this.addToSelectiontoolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.childrenAutoSelecttoolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.autoRenametoolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.overwriteTagtoolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RCBase = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.rightClick = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.TV = new TagPan.MSTreeview();
@@ -185,6 +186,14 @@ namespace TagPan
             this.autoRenametoolStripMenuItem.Text = "Auto rename using FastTag";
             this.autoRenametoolStripMenuItem.Click += AutoRenameToggle;
             // 
+            // overwriteTagtoolStripMenuItem
+            // 
+            this.overwriteTagtoolStripMenuItem.CheckOnClick = true;
+            this.overwriteTagtoolStripMenuItem.Name = "overwriteTagtoolStripMenuItem";
+            this.overwriteTagtoolStripMenuItem.Size = new System.Drawing.Size(295, 22);
+            this.overwriteTagtoolStripMenuItem.Text = "overwrite tags on paste";
+            this.overwriteTagtoolStripMenuItem.Click += overwriteTagToggle;
+            // 
             // RCBase
             // 
             this.RCBase.Name = "RCBase";
@@ -207,7 +216,8 @@ namespace TagPan
             this.toolStripSeparator2,
             this.addToSelectiontoolStripMenuItem,
             this.childrenAutoSelecttoolStripMenuItem,
-            this.autoRenametoolStripMenuItem});
+            this.autoRenametoolStripMenuItem,
+            this.overwriteTagtoolStripMenuItem});
             this.rightClick.Name = "rightClick";
             this.rightClick.Size = new System.Drawing.Size(296, 214);
             // 
@@ -263,6 +273,7 @@ namespace TagPan
         private System.Windows.Forms.ToolStripMenuItem addToSelectiontoolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem childrenAutoSelecttoolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem autoRenametoolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem overwriteTagtoolStripMenuItem;
         private MSTreeview TV;
     }
 }

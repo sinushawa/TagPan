@@ -45,6 +45,7 @@ namespace TagPan
         public bool additive = false;
         public bool childrenAutoSelect = false;
         public bool autoRename = false;
+        public bool overwriteTag = false;
         public string delimiter = "_";
         private List<RECT> dockable;
         public int snapRadius = 18;
@@ -541,6 +542,17 @@ namespace TagPan
             SelectionEvent(this, new TypedEventArg<List<int>>(selectedObjects.ToList()));
             ForceRedraw(null, null);
         }
+        public void PasteTagsToSelection(int _objContainingTagsToPaste)
+        {
+            if (overwriteTag)
+            {
+                ClearSelectionTags();
+            }
+            foreach (int _obj in selectedObjects)
+            {
+                CloneNode(_objContainingTagsToPaste, _obj);
+            }
+        }
 
         private void ConcateneNodes(SimpleTreeNode<DS.TagNode> _dragedNode, SimpleTreeNode<DS.TagNode> _targetNode)
         {
@@ -645,6 +657,11 @@ namespace TagPan
                     }
                 }
             }
+            ForceRedraw(null, null);
+        }
+        public void ClearSelectionTags()
+        {
+            DeleteObjects(selectedObjects.ToList());
             ForceRedraw(null, null);
         }
 
@@ -791,9 +808,10 @@ namespace TagPan
         {
             autoRename = !autoRename;
         }
-
-
-
+        public void overwriteTagToggle(object sender, System.EventArgs e)
+        {
+            overwriteTag = !overwriteTag;
+        }
 
         public List<ReadWriteKeyPair> CreateTemplateData()
         {
