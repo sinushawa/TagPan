@@ -317,7 +317,6 @@ Icon:#("RBC",1)
 			ToSendBack.Add(ToAdd)
 		)
 		treePan.LoadData(ToSendBack)
-		treePan.autoRename=true
 		for i in holdsel do
 		(
 			selectmore i

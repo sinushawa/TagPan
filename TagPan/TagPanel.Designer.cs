@@ -184,6 +184,7 @@ namespace TagPan
             this.autoRenametoolStripMenuItem.Name = "AutoRenametoolStripMenuItem";
             this.autoRenametoolStripMenuItem.Size = new System.Drawing.Size(295, 22);
             this.autoRenametoolStripMenuItem.Text = "Auto rename using FastTag";
+            this.autoRenametoolStripMenuItem.Checked = true;
             this.autoRenametoolStripMenuItem.Click += AutoRenameToggle;
             // 
             // overwriteTagtoolStripMenuItem
@@ -192,6 +193,7 @@ namespace TagPan
             this.overwriteTagtoolStripMenuItem.Name = "overwriteTagtoolStripMenuItem";
             this.overwriteTagtoolStripMenuItem.Size = new System.Drawing.Size(295, 22);
             this.overwriteTagtoolStripMenuItem.Text = "overwrite tags on paste";
+            this.overwriteTagtoolStripMenuItem.Checked = true;
             this.overwriteTagtoolStripMenuItem.Click += overwriteTagToggle;
             // 
             // RCBase

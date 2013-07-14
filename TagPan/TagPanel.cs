@@ -44,8 +44,8 @@ namespace TagPan
         public ObservableCollection<string> selectedObjectsNames = new ObservableCollection<string>();
         public bool additive = false;
         public bool childrenAutoSelect = false;
-        public bool autoRename = false;
-        public bool overwriteTag = false;
+        public bool autoRename = true;
+        public bool overwriteTag = true;
         public string delimiter = "_";
         private List<RECT> dockable;
         public int snapRadius = 18;
@@ -67,13 +67,7 @@ namespace TagPan
             this.Load += TagPanel_Load;
             
         }
-        public void RegisterDockableTo(IntPtr _hwnd)
-        {
-            RECT rct = new RECT();
-            GetWindowRect(_hwnd, ref rct);
-            dockable.Add(rct);
-        }
-
+        #region internal
         void TagPanel_Load(object sender, EventArgs e)
         {
             var g = this.Parent;
@@ -165,37 +159,11 @@ namespace TagPan
                 }
             }
         }
-        public void ClearTree()
-        {
-            treeDataStructure.Children[0].Children.Clear();
-            TV.Nodes[0].Nodes.Clear();
-        }
-
+        
         private void TagPanel_FormClosing(object sender, FormClosingEventArgs e)
         {
             SaveEvent(null, GetDataForSave());
-        }
-        public TypedEventArg<KeyValuePair<List<DS.TagNode>, List<SimpleTreeNode<DS.TagNode>>>> GetDataForSave()
-        {
-            List<DS.TagNode> _nodes = new List<DS.TagNode>();
-            List<SimpleTreeNode<DS.TagNode>> _allnodes = treeDataStructure.GetEnumerable(TreeTraversalType.BreadthFirst, TreeTraversalDirection.TopDown).Where(x=>x.Value.label!="root" && x.Value.label!="project").ToList();
-            foreach (SimpleTreeNode<DS.TagNode> _dnode in _allnodes)
-            {
-                _nodes.Add(_dnode.Value);
-            }
-            return  new TypedEventArg<KeyValuePair<List<DS.TagNode>, List<SimpleTreeNode<DS.TagNode>>>>(new KeyValuePair<List<DS.TagNode>, List<SimpleTreeNode<DS.TagNode>>>(_nodes, treeDataStructure.Children.ToList()));
-        }
-        public void LoadData(List<SimpleTreeNode<DS.TagNode>> _data)
-        {
-            SimpleTreeNode<DS.TagNode> Project = new SimpleTreeNode<DS.TagNode>();
-            Project.Value = new DS.TagNode("project");
-            treeDataStructure.Children.Add(Project);
-            TreeNode _node = new TreeNode(Project.Value.label);
-            _node.ContextMenuStrip = rightClick;
-            TV.Nodes.Add(_node);
-            UIToData.Add(_node, Project.Value.ID);
-            TreePopulate(_data);
-        }
+        }        
         private void TreePopulate(SimpleTreeNode<DS.TagNode> _dnode)
         {
             appendNewNode(_dnode.Value.label, _dnode.Value.objects);
@@ -208,9 +176,7 @@ namespace TagPan
                 TreePopulate(_child);
             }
         }
-
-
-        void TV_DragDrop(object sender, DragEventArgs e)
+        private void TV_DragDrop(object sender, DragEventArgs e)
         {
             // Get the screen point.
             Point pt = new Point(e.X, e.Y);
@@ -246,8 +212,7 @@ namespace TagPan
             }
             ForceRedraw(null, null);
         }
-
-        void TV_MouseDown(object sender, MouseEventArgs e)
+        private void TV_MouseDown(object sender, MouseEventArgs e)
         {
             MouseEventArgs eventargs = (MouseEventArgs)e;
             if (eventargs.Button == System.Windows.Forms.MouseButtons.Right)
@@ -255,12 +220,11 @@ namespace TagPan
                 TV.SelectedNode.ContextMenuStrip.Show(TV, e.Location);
             }
         }
-
-        void TV_DClick(object sender, EventArgs e)
+        private void TV_DClick(object sender, EventArgs e)
         {
             SelectTaggedItem(null, null); ;
         }
-        void ContextMenuStrip_Opening(object sender, CancelEventArgs e)
+        private void ContextMenuStrip_Opening(object sender, CancelEventArgs e)
         {
             if (TV.SelectedNodes.Count > 1)
             {
@@ -271,21 +235,7 @@ namespace TagPan
                 rightClick.Items.Find("addShortcutTagToolStripMenuItem", true).FirstOrDefault().Enabled = false;
             }
         }
-
-        
-
-        public void DeleteObjects(List<Int32> _toDels)
-        {
-            foreach (Int32 _toDel in _toDels)
-            {
-                var nodeInDel = treeDataStructure.GetNodeList().Where<SimpleTreeNode<DS.TagNode>>(x => x.Value.objects.Contains(_toDel)).ToList<SimpleTreeNode<DS.TagNode>>();
-                foreach (SimpleTreeNode<DS.TagNode> lst in nodeInDel)
-                {
-                    lst.Value.objects.Remove(_toDel);
-                }
-            }
-        }
-        void TV_AfterLabelEdit(object sender, NodeLabelEditEventArgs e)
+        private void TV_AfterLabelEdit(object sender, NodeLabelEditEventArgs e)
         {
             if (e.Label == "")
             {
@@ -308,11 +258,7 @@ namespace TagPan
                 ForceRedraw(null, null);
             }
         }
-        public void RaiseSelectionEvent()
-        {
-            SelectionEvent(null, new TypedEventArg<List<int>>(selectedObjects.ToList()));
-        }
-        void selectedObjects_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void selectedObjects_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             foreach (TreeNode _node in TV.HilightedNodes)
             {
@@ -331,21 +277,28 @@ namespace TagPan
             }
 
         }
-
-
-        public SimpleTreeNode<DS.TagNode> getNodeData(TreeNode _treeNode)
+        private SimpleTreeNode<DS.TagNode> getNodeData(TreeNode _treeNode)
         {
             SimpleTreeNode<DS.TagNode> node = treeDataStructure.GetEnumerable(TreeTraversalType.BreadthFirst, TreeTraversalDirection.TopDown).Where<SimpleTreeNode<DS.TagNode>>(x => x.Value.ID == UIToData[_treeNode]).FirstOrDefault();
             return node;
         }
-        public TreeNode getNodeVisual(SimpleTreeNode<DS.TagNode> _DataNode)
+        private List<SimpleTreeNode<DS.TagNode>> getSelectedNodesData()
+        {
+            List<SimpleTreeNode<DS.TagNode>> _selectedNodesData = new List<SimpleTreeNode<DS.TagNode>>();
+            foreach (TreeNode _treeNode in TV.SelectedNodes)
+            {
+                _selectedNodesData.Add(getNodeData(_treeNode));
+            }
+            return _selectedNodesData;
+        }
+        private TreeNode getNodeVisual(SimpleTreeNode<DS.TagNode> _DataNode)
         {
             Guid ID = _DataNode.Value.ID;
             KeyValuePair<TreeNode, Guid> _pair = UIToData.Where(x => x.Value == ID).FirstOrDefault();
             TreeNode _visualNode = _pair.Key;
             return _visualNode;
         }
-        public KeyValuePair<TreeNode, Guid> getNodeKeyValuePair(SimpleTreeNode<DS.TagNode> _DataNode)
+        private KeyValuePair<TreeNode, Guid> getNodeKeyValuePair(SimpleTreeNode<DS.TagNode> _DataNode)
         {
             Guid ID = _DataNode.Value.ID;
             KeyValuePair<TreeNode, Guid> _pair = UIToData.Where(x => x.Value == ID).FirstOrDefault();
@@ -443,7 +396,7 @@ namespace TagPan
             ForceRedraw(null, null);
             return newOne;
         }
-        public SimpleTreeNode<DS.TagNode> appendNewNode(string _name)
+        private SimpleTreeNode<DS.TagNode> appendNewNode(string _name)
         {
             TreeNode holdSel = TV.SelectedNode;
             SimpleTreeNode<DS.TagNode> _bestnode = treeDataStructure.Children[0];
@@ -486,53 +439,7 @@ namespace TagPan
             TV.SelectedNode = holdSel;
             return getNodeData(_targetNode);
         }
-        public SimpleTreeNode<DS.TagNode> appendNewNode(string _name, List<int> _objects)
-        {
-            TreeNode holdSel = TV.SelectedNode;
-            SimpleTreeNode<DS.TagNode> _bestnode = treeDataStructure.Children[0];
-            List<string> _nameElements = _name.Split(new char[] { '_' }).ToList();
-            Queue<string> _queuedElements = new Queue<string>(_nameElements);
-            string _lastElement;
-            string _reconstructedName="";
-            bool first=true;
-            while (true)
-            {
-                if(!first)
-                {
-                    _reconstructedName+="_";
-                }
-                _lastElement = _queuedElements.Dequeue();
-                _reconstructedName += _lastElement;
-                SimpleTreeNode<DS.TagNode> _testnode = getNodeDataFromBranch(_reconstructedName);
-                if (_testnode != null)
-                {
-                    _bestnode = _testnode;
-                }
-                else
-                {
-                    break;
-                }
-                if(_queuedElements.Count<1)
-                {
-                    _bestnode.Value.objects.AddRange(_objects);
-                    return _bestnode;
-                }
-                first = false;
-            }
-            TV.SelectedNode=getNodeVisual(_bestnode);
-            TreeNode _targetNode;
-            _targetNode = TV.SelectedNode;
-            _targetNode = appendNewNode(_lastElement, _targetNode);
-            while(_queuedElements.Count>0)
-            {
-                 _targetNode = appendNewNode(_queuedElements.Dequeue(), _targetNode);
-            }
-            TV.SelectedNode = holdSel;
-            getNodeData(_targetNode).Value.objects.AddRange(_objects);
-            return getNodeData(_targetNode);
-        }
-
-        public void CloneNode(int _originalObject, int _clonedObject)
+        private void CloneNode(int _originalObject, int _clonedObject)
         {
             List<SimpleTreeNode<DS.TagNode>> originalTags = treeDataStructure.GetEnumerable(TreeTraversalType.BreadthFirst, TreeTraversalDirection.TopDown).Where<SimpleTreeNode<DS.TagNode>>(x => x.Value.objects.Any(y => y == _originalObject)).ToList();
             foreach (SimpleTreeNode<DS.TagNode> _node in originalTags)
@@ -542,18 +449,6 @@ namespace TagPan
             SelectionEvent(this, new TypedEventArg<List<int>>(selectedObjects.ToList()));
             ForceRedraw(null, null);
         }
-        public void PasteTagsToSelection(int _objContainingTagsToPaste)
-        {
-            if (overwriteTag)
-            {
-                ClearSelectionTags();
-            }
-            foreach (int _obj in selectedObjects)
-            {
-                CloneNode(_objContainingTagsToPaste, _obj);
-            }
-        }
-
         private void ConcateneNodes(SimpleTreeNode<DS.TagNode> _dragedNode, SimpleTreeNode<DS.TagNode> _targetNode)
         {
             // find common label
@@ -568,19 +463,24 @@ namespace TagPan
                 appendNewNode(newName, _node.Value.objects);
             }
         }
-
         private SimpleTreeNode<DS.TagNode> getNodeDataFromBranch(string _branch)
         {
-            SimpleTreeNode<DS.TagNode> _dnode = treeDataStructure.GetEnumerable(TreeTraversalType.BreadthFirst, TreeTraversalDirection.TopDown).Where<SimpleTreeNode<DS.TagNode>>(x => x.Value.label == _branch).FirstOrDefault();
+            SimpleTreeNode<DS.TagNode> _dnode = treeDataStructure.GetEnumerable(TreeTraversalType.BreadthFirst, TreeTraversalDirection.TopDown).First<SimpleTreeNode<DS.TagNode>>(x => x.Value.label == _branch);
             return _dnode;
         }
-        public List<string> getObjectTags(int _obj)
+        public List<string> getObjectTags(int _obj)  //used in fastInfo
         {
             List<string> _tags = treeDataStructure.GetEnumerable(TreeTraversalType.BreadthFirst, TreeTraversalDirection.TopDown).Where<SimpleTreeNode<DS.TagNode>>(x => x.Value.objects.Any(y => y == _obj)).Select(x => x.Value.label).ToList();
             return _tags;
         }
-
-        public void ApplyTag(object sender, System.EventArgs e)
+        private List<SimpleTreeNode<DS.TagNode>> getHighestNodesInSelection(int _numberOfSwatches)
+        {
+            List<SimpleTreeNode<DS.TagNode>> _hnodes = getSelectedNodesData().OrderBy(x => x.Depth).Take(_numberOfSwatches).ToList();
+            return _hnodes;
+        }
+        #endregion
+        #region UI methods
+        private void ApplyTag(object sender, System.EventArgs e)
         {
             getNodeData(TV.SelectedNode).Value.objects.AddRange(selectedObjects);
             getNodeData(TV.SelectedNode).Value.objects = getNodeData(TV.SelectedNode).Value.objects.Distinct().ToList();
@@ -588,7 +488,7 @@ namespace TagPan
             ForceRedraw(null, null);
         }
 
-        public void SelectTaggedItem(object sender, System.EventArgs e)
+        private void SelectTaggedItem(object sender, System.EventArgs e)
         {
             List<TreeNode> _nodes;
             if (childrenAutoSelect == true)
@@ -616,14 +516,14 @@ namespace TagPan
             SelectionEvent(this, new TypedEventArg<List<int>>(selectedObjects.ToList()));
 
         }
-        public void SelectCommonItems(object sender, System.EventArgs e)
+        private void SelectCommonItems(object sender, System.EventArgs e)
         {
             List<int> commonObjects = getCommonObjects();
             selectedObjects.Clear();
             selectedObjects.AddRange(commonObjects);
             SelectionEvent(this, new TypedEventArg<List<int>>(selectedObjects.ToList()));
         }
-        public void RemoveTaggedItemsFromSelection(object sender, EventArgs e)
+        private void RemoveTaggedItemsFromSelection(object sender, EventArgs e)
         {
             List<int> objsInNodes = new List<int>();
             List<TreeNode> _nodes;
@@ -644,7 +544,7 @@ namespace TagPan
             SelectionEvent(this, new TypedEventArg<List<int>>(selectedObjects.ToList()));
             ForceRedraw(null, null);
         }
-        public void RemoveTag(object sender, System.EventArgs e)
+        private void RemoveTag(object sender, System.EventArgs e)
         {
             List<int> objsInNode = getNodeData(TV.SelectedNode).Value.objects;
             for (int i = 0; i < objsInNode.Count; i++)
@@ -659,19 +559,19 @@ namespace TagPan
             }
             ForceRedraw(null, null);
         }
-        public void ClearSelectionTags()
+        private void ClearSelectionTags()
         {
             DeleteObjects(selectedObjects.ToList());
             ForceRedraw(null, null);
         }
 
-        public void AddTag(object sender, EventArgs e)
+        private void AddTag(object sender, EventArgs e)
         {
 
             TV.SelectedNode = appendNewNode("untitled", TV.SelectedNode);
             TV.SelectedNode.BeginEdit();
         }
-        public void AddShortcutTag(object sender, EventArgs e)
+        private void AddShortcutTag(object sender, EventArgs e)
         {
             List<int> objsInNodes = getCommonObjects();
             List<SimpleTreeNode<DS.TagNode>> _dnodes = new List<SimpleTreeNode<DS.TagNode>>();
@@ -684,7 +584,7 @@ namespace TagPan
             TreeNode _vnode = getNodeVisual(_dnode);
             appendNewNode(shortcutName, _vnode, objsInNodes);
         }
-        public void CreateStructure(object sender, EventArgs e)
+        private void CreateStructure(object sender, EventArgs e)
         {
             Dictionary<int, List<string>> _objectsTags = new Dictionary<int, List<string>>();
             int counter = 0;
@@ -744,9 +644,147 @@ namespace TagPan
             selectedObjects.RaiseCollectionChanged();
             ForceRedraw(null, null);
         }
-        public void RenameUsingStructure(object sender, EventArgs e)
+        
+        private void RenameTag(object sender, System.EventArgs e)
         {
-            
+            TV.SelectedNode.BeginEdit();
+        }
+
+        private void DeleteTag(object sender, System.EventArgs e)
+        {
+
+            SimpleTreeNode<DS.TagNode> _dnode = getNodeData(TV.SelectedNode);
+            TreeNode _tnode = TV.SelectedNode;
+            List<string> _fullPaths = _tnode.GetNodeList().Select(x => x.FullPath).ToList();
+            List<string> _tagNames = new List<string>();
+            foreach (string _fullPath in _fullPaths)
+            {
+                _tagNames.Add(tagNameFromFullPath(_fullPath, delimiter));
+            }
+            _tnode.Parent.Nodes.Remove(_tnode);
+            _dnode.Parent.Children.Remove(_dnode);
+            UIToData.Remove(_tnode);
+            DeleteTagEvent(null, new TypedEventArg<List<string>>(_tagNames));
+            ForceRedraw(null, null);
+        }
+        private void AddToSelection(object sender, System.EventArgs e)
+        {
+            additive = !additive;
+        }
+        private void ChildAutoSelectToggle(object sender, System.EventArgs e)
+        {
+            childrenAutoSelect = !childrenAutoSelect;
+        }
+        private void AutoRenameToggle(object sender, System.EventArgs e)
+        {
+            autoRename = !autoRename;
+        }
+        private void overwriteTagToggle(object sender, System.EventArgs e)
+        {
+            overwriteTag = !overwriteTag;
+        }
+        #endregion
+        #region Load & save
+        public void LoadData(List<SimpleTreeNode<DS.TagNode>> _data)
+        {
+            SimpleTreeNode<DS.TagNode> Project = new SimpleTreeNode<DS.TagNode>();
+            Project.Value = new DS.TagNode("project");
+            treeDataStructure.Children.Add(Project);
+            TreeNode _node = new TreeNode(Project.Value.label);
+            _node.ContextMenuStrip = rightClick;
+            TV.Nodes.Add(_node);
+            UIToData.Add(_node, Project.Value.ID);
+            TreePopulate(_data);
+        }
+        public TypedEventArg<KeyValuePair<List<DS.TagNode>, List<SimpleTreeNode<DS.TagNode>>>> GetDataForSave()
+        {
+            List<DS.TagNode> _nodes = new List<DS.TagNode>();
+            List<SimpleTreeNode<DS.TagNode>> _allnodes = treeDataStructure.GetEnumerable(TreeTraversalType.BreadthFirst, TreeTraversalDirection.TopDown).Where(x => x.Value.label != "root" && x.Value.label != "project").ToList();
+            foreach (SimpleTreeNode<DS.TagNode> _dnode in _allnodes)
+            {
+                _nodes.Add(_dnode.Value);
+            }
+            return new TypedEventArg<KeyValuePair<List<DS.TagNode>, List<SimpleTreeNode<DS.TagNode>>>>(new KeyValuePair<List<DS.TagNode>, List<SimpleTreeNode<DS.TagNode>>>(_nodes, treeDataStructure.Children.ToList()));
+        }
+        public List<ReadWriteKeyPair> CreateTemplateData()
+        {
+            return new List<ReadWriteKeyPair>();
+        }
+        public ReadWriteKeyPair CreateKeyPair()
+        {
+            return new ReadWriteKeyPair();
+        }
+        public List<int> CreateObjList()
+        {
+            return new List<int>();
+        }
+        public void LoadData(List<ReadWriteKeyPair> _data)
+        {
+            foreach (ReadWriteKeyPair _pair in _data)
+            {
+                appendNewNode(_pair.key, _pair.objects);
+            }
+        }
+        #endregion
+        #region exposed UI linking
+        public void RegisterDockableTo(IntPtr _hwnd) //used in RobMainPanel
+        {
+            RECT rct = new RECT();
+            GetWindowRect(_hwnd, ref rct);
+            dockable.Add(rct);
+        }
+        public void RaiseSelectionEvent() //used in RobMainPanel
+        {
+            SelectionEvent(null, new TypedEventArg<List<int>>(selectedObjects.ToList()));
+        }
+        public SimpleTreeNode<DS.TagNode> appendNewNode(string _name, List<int> _objects)  //public for fastTag
+        {
+            TreeNode holdSel = TV.SelectedNode;
+            SimpleTreeNode<DS.TagNode> _bestnode = treeDataStructure.Children[0];
+            List<string> _nameElements = _name.Split(new char[] { '_' }).ToList();
+            Queue<string> _queuedElements = new Queue<string>(_nameElements);
+            string _lastElement;
+            string _reconstructedName = "";
+            bool first = true;
+            while (true)
+            {
+                if (!first)
+                {
+                    _reconstructedName += "_";
+                }
+                _lastElement = _queuedElements.Dequeue();
+                _reconstructedName += _lastElement;
+                SimpleTreeNode<DS.TagNode> _testnode = getNodeDataFromBranch(_reconstructedName);
+                if (_testnode != null)
+                {
+                    _bestnode = _testnode;
+                }
+                else
+                {
+                    break;
+                }
+                if (_queuedElements.Count < 1)
+                {
+                    _bestnode.Value.objects.AddRange(_objects);
+                    return _bestnode;
+                }
+                first = false;
+            }
+            TV.SelectedNode = getNodeVisual(_bestnode);
+            TreeNode _targetNode;
+            _targetNode = TV.SelectedNode;
+            _targetNode = appendNewNode(_lastElement, _targetNode);
+            while (_queuedElements.Count > 0)
+            {
+                _targetNode = appendNewNode(_queuedElements.Dequeue(), _targetNode);
+            }
+            TV.SelectedNode = holdSel;
+            getNodeData(_targetNode).Value.objects.AddRange(_objects);
+            return getNodeData(_targetNode);
+        }
+        public void RenameUsingStructure(object sender, EventArgs e) //used in fastTag
+        {
+
             List<KeyValuePair<int, string>> _objectName = new List<KeyValuePair<int, string>>();
 
             foreach (int _object in selectedObjects)
@@ -770,70 +808,35 @@ namespace TagPan
             }
             ForceRedraw(null, null);
         }
-        public void RenameTag(object sender, System.EventArgs e)
+        #endregion
+        
+        public void ClearTree()
         {
-            TV.SelectedNode.BeginEdit();
+            treeDataStructure.Children[0].Children.Clear();
+            TV.Nodes[0].Nodes.Clear();
         }
-
-        public void DeleteTag(object sender, System.EventArgs e)
+        public void DeleteObjects(List<Int32> _toDels)
         {
-
-            SimpleTreeNode<DS.TagNode> _dnode = getNodeData(TV.SelectedNode);
-            TreeNode _tnode = TV.SelectedNode;
-            List<string> _fullPaths=_tnode.GetNodeList().Select(x => x.FullPath).ToList();
-            List<string> _tagNames = new List<string>();
-            foreach (string _fullPath in _fullPaths)
+            foreach (Int32 _toDel in _toDels)
             {
-                _tagNames.Add(tagNameFromFullPath(_fullPath, delimiter));
+                var nodeInDel = treeDataStructure.GetNodeList().Where<SimpleTreeNode<DS.TagNode>>(x => x.Value.objects.Contains(_toDel)).ToList<SimpleTreeNode<DS.TagNode>>();
+                foreach (SimpleTreeNode<DS.TagNode> lst in nodeInDel)
+                {
+                    lst.Value.objects.Remove(_toDel);
+                }
             }
-            _tnode.Parent.Nodes.Remove(_tnode);
-            _dnode.Parent.Children.Remove(_dnode);
-            UIToData.Remove(_tnode);
-            DeleteTagEvent(null, new TypedEventArg<List<string>>(_tagNames));
-            ForceRedraw(null, null);
         }
-
-
-
-
-        public void AddToSelection(object sender, System.EventArgs e)
+        public void PasteTagsToSelection(int _objContainingTagsToPaste)
         {
-            additive = !additive;
-        }
-        public void ChildAutoSelectToggle(object sender, System.EventArgs e)
-        {
-            childrenAutoSelect = !childrenAutoSelect;
-        }
-        public void AutoRenameToggle(object sender, System.EventArgs e)
-        {
-            autoRename = !autoRename;
-        }
-        public void overwriteTagToggle(object sender, System.EventArgs e)
-        {
-            overwriteTag = !overwriteTag;
-        }
-
-        public List<ReadWriteKeyPair> CreateTemplateData()
-        {
-            return new List<ReadWriteKeyPair>();
-        }
-        public ReadWriteKeyPair CreateKeyPair()
-        {
-            return new ReadWriteKeyPair();
-        }
-        public List<int> CreateObjList()
-        {
-            return new List<int>();
-        }
-        public void LoadData(List<ReadWriteKeyPair> _data)
-        {
-            foreach (ReadWriteKeyPair _pair in _data)
+            if (overwriteTag)
             {
-                appendNewNode(_pair.key, _pair.objects);
+                ClearSelectionTags();
+            }
+            foreach (int _obj in selectedObjects)
+            {
+                CloneNode(_objContainingTagsToPaste, _obj);
             }
         }
     }
-
-
 }
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
