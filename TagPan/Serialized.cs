@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace DS
+namespace TagPan
 {
     public class TagNode: TagPan.DDNode
     {

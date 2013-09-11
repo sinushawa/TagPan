@@ -32,13 +32,13 @@ namespace TagPan
         public event EventHandler<TypedEventArg<List<Int32>>> SelectionEvent;
         public event EventHandler<TypedEventArg<KeyValuePair<int, string>>> RenameObjectEvent;
         public event EventHandler<TypedEventArg<List<KeyValuePair<string, string>>>> RenameTagEvent;
-        public event EventHandler<TypedEventArg<KeyValuePair<List<DS.TagNode>,List<SimpleTreeNode<DS.TagNode>>>>> SaveEvent;
+        public event EventHandler<TypedEventArg<KeyValuePair<List<TagNode>,List<SimpleTreeNode<TagNode>>>>> SaveEvent;
         public event EventHandler<TypedEventArg<List<string>>> DeleteTagEvent;
         public event EventHandler ForceRedraw;
 
         public Stopwatch avoidResizeLoop=new Stopwatch();
 
-        public SimpleTree<DS.TagNode> treeDataStructure = new SimpleTree<DS.TagNode>();
+        public SimpleTree<TagNode> treeDataStructure = new SimpleTree<TagNode>();
         private Dictionary<TreeNode, Guid> UIToData = new Dictionary<TreeNode, Guid>();
         public ObservableCollection<Int32> selectedObjects = new ObservableCollection<Int32>();
         public ObservableCollection<string> selectedObjectsNames = new ObservableCollection<string>();
@@ -57,13 +57,13 @@ namespace TagPan
             InitializeComponent();
             
             selectedObjects.CollectionChanged += selectedObjects_CollectionChanged;
-            treeDataStructure.Value = new DS.TagNode("root");
+            treeDataStructure.Value = new TagNode("root");
             TV.LabelEdit = true;
             TV.MouseDown += TV_MouseDown;
             TV.DClick += TV_DClick;
             TV.AfterLabelEdit += TV_AfterLabelEdit;
             TV.DragDrop += TV_DragDrop;
-            LoadData(new List<SimpleTreeNode<DS.TagNode>>());
+            LoadData(new List<SimpleTreeNode<TagNode>>());
             this.Load += TagPanel_Load;
             
         }
@@ -164,14 +164,14 @@ namespace TagPan
         {
             SaveEvent(null, GetDataForSave());
         }        
-        private void TreePopulate(SimpleTreeNode<DS.TagNode> _dnode)
+        private void TreePopulate(SimpleTreeNode<TagNode> _dnode)
         {
             appendNewNode(_dnode.Value.label, _dnode.Value.objects.ToList());
             TreePopulate(_dnode.Children.ToList());
         }
-        private void TreePopulate(List<SimpleTreeNode<DS.TagNode>> _dnodes)
+        private void TreePopulate(List<SimpleTreeNode<TagNode>> _dnodes)
         {
-            foreach (SimpleTreeNode<DS.TagNode> _child in _dnodes)
+            foreach (SimpleTreeNode<TagNode> _child in _dnodes)
             {
                 TreePopulate(_child);
             }
@@ -187,8 +187,8 @@ namespace TagPan
             // Get the node underneath the mouse.
             TreeNode _targetNode = TV.GetNodeAt(pt);
             TreeNode _dragedNode = (TreeNode)e.Data.GetData(typeof(TreeNode));
-            SimpleTreeNode<DS.TagNode> _dragedData = getNodeData(_dragedNode);
-            SimpleTreeNode<DS.TagNode> _targetData = getNodeData(_targetNode);
+            SimpleTreeNode<TagNode> _dragedData = getNodeData(_dragedNode);
+            SimpleTreeNode<TagNode> _targetData = getNodeData(_targetNode);
             if (_targetNode != _dragedNode)
             {
                 string _dragedParticular = _dragedData.Value.label.Split(new char[] { '_' }).Last();
@@ -244,9 +244,9 @@ namespace TagPan
             else
             {
                 e.Node.Text = e.Label;
-                List < SimpleTreeNode < DS.TagNode >> nodesToRelabel = getNodeData(e.Node).GetNodeList();
+                List < SimpleTreeNode < TagNode >> nodesToRelabel = getNodeData(e.Node).GetNodeList();
                 List<KeyValuePair<string, string>> _NotifyMaxContainer = new List<KeyValuePair<string, string>>();
-                foreach (SimpleTreeNode<DS.TagNode> _dnode in nodesToRelabel)
+                foreach (SimpleTreeNode<TagNode> _dnode in nodesToRelabel)
                 {
                     string _previousTag = _dnode.Value.label;
                     List<string> _branchName = getNodeVisual(_dnode).FullPath.Split(new char[] { '\\' }).Where(x => x != "project").ToList();
@@ -269,36 +269,36 @@ namespace TagPan
             foreach (int obj in selectedObjects)
             {
                 Debug.WriteLine(obj);
-                List<SimpleTreeNode<DS.TagNode>> nodesContaining = treeDataStructure.GetEnumerable(TreeTraversalType.BreadthFirst, TreeTraversalDirection.TopDown).Where<SimpleTreeNode<DS.TagNode>>(x => x.Value.objects.Contains(obj)).ToList<SimpleTreeNode<DS.TagNode>>();
-                foreach (SimpleTreeNode<DS.TagNode> _node in nodesContaining)
+                List<SimpleTreeNode<TagNode>> nodesContaining = treeDataStructure.GetEnumerable(TreeTraversalType.BreadthFirst, TreeTraversalDirection.TopDown).Where<SimpleTreeNode<TagNode>>(x => x.Value.objects.Contains(obj)).ToList<SimpleTreeNode<TagNode>>();
+                foreach (SimpleTreeNode<TagNode> _node in nodesContaining)
                 {
                     TV.HighLight(getNodeVisual(_node), true);
                 }
             }
 
         }
-        private SimpleTreeNode<DS.TagNode> getNodeData(TreeNode _treeNode)
+        private SimpleTreeNode<TagNode> getNodeData(TreeNode _treeNode)
         {
-            SimpleTreeNode<DS.TagNode> node = treeDataStructure.GetEnumerable(TreeTraversalType.BreadthFirst, TreeTraversalDirection.TopDown).Where<SimpleTreeNode<DS.TagNode>>(x => x.Value.ID == UIToData[_treeNode]).FirstOrDefault();
+            SimpleTreeNode<TagNode> node = treeDataStructure.GetEnumerable(TreeTraversalType.BreadthFirst, TreeTraversalDirection.TopDown).Where<SimpleTreeNode<TagNode>>(x => x.Value.ID == UIToData[_treeNode]).FirstOrDefault();
             return node;
         }
-        private List<SimpleTreeNode<DS.TagNode>> getSelectedNodesData()
+        private List<SimpleTreeNode<TagNode>> getSelectedNodesData()
         {
-            List<SimpleTreeNode<DS.TagNode>> _selectedNodesData = new List<SimpleTreeNode<DS.TagNode>>();
+            List<SimpleTreeNode<TagNode>> _selectedNodesData = new List<SimpleTreeNode<TagNode>>();
             foreach (TreeNode _treeNode in TV.SelectedNodes)
             {
                 _selectedNodesData.Add(getNodeData(_treeNode));
             }
             return _selectedNodesData;
         }
-        private TreeNode getNodeVisual(SimpleTreeNode<DS.TagNode> _DataNode)
+        private TreeNode getNodeVisual(SimpleTreeNode<TagNode> _DataNode)
         {
             Guid ID = _DataNode.Value.ID;
             KeyValuePair<TreeNode, Guid> _pair = UIToData.Where(x => x.Value == ID).FirstOrDefault();
             TreeNode _visualNode = _pair.Key;
             return _visualNode;
         }
-        private KeyValuePair<TreeNode, Guid> getNodeKeyValuePair(SimpleTreeNode<DS.TagNode> _DataNode)
+        private KeyValuePair<TreeNode, Guid> getNodeKeyValuePair(SimpleTreeNode<TagNode> _DataNode)
         {
             Guid ID = _DataNode.Value.ID;
             KeyValuePair<TreeNode, Guid> _pair = UIToData.Where(x => x.Value == ID).FirstOrDefault();
@@ -307,8 +307,8 @@ namespace TagPan
         private List<KeyValuePair<TreeNode, Guid>> getVisualDataPairContainingObject(int _object)
         {
             List<KeyValuePair<TreeNode, Guid>> _returnKeyPair = new List<KeyValuePair<TreeNode, Guid>>();
-            List<SimpleTreeNode<DS.TagNode>> _dnodes = treeDataStructure.GetEnumerable(TreeTraversalType.BreadthFirst, TreeTraversalDirection.TopDown).Where<SimpleTreeNode<DS.TagNode>>(x => x.Value.objects.Any(y => y == _object)).ToList();
-            foreach (SimpleTreeNode<DS.TagNode> _dnode in _dnodes)
+            List<SimpleTreeNode<TagNode>> _dnodes = treeDataStructure.GetEnumerable(TreeTraversalType.BreadthFirst, TreeTraversalDirection.TopDown).Where<SimpleTreeNode<TagNode>>(x => x.Value.objects.Any(y => y == _object)).ToList();
+            foreach (SimpleTreeNode<TagNode> _dnode in _dnodes)
             {
                 _returnKeyPair.Add(getNodeKeyValuePair(_dnode));
             }
@@ -349,16 +349,16 @@ namespace TagPan
         {
             TreeNode newOne = new TreeNode();
             List<string> _branchName = _parentNode.FullPath.Split(new char[] { '\\' }).Where(x => x != "project").ToList();
-            DS.TagNode oData;
+            TagNode oData;
             if (_branchName.Count > 0)
             {
-                oData = new DS.TagNode(joinBranchName(_branchName, delimiter) + "_" + _name);
+                oData = new TagNode(joinBranchName(_branchName, delimiter) + "_" + _name);
             }
             else
             {
-                oData = new DS.TagNode(_name);
+                oData = new TagNode(_name);
             }
-            SimpleTreeNode<DS.TagNode> newOneData = new SimpleTreeNode<DS.TagNode>();
+            SimpleTreeNode<TagNode> newOneData = new SimpleTreeNode<TagNode>();
             newOneData.Value = oData;
             newOne.Text = _name;
             newOne.ContextMenuStrip = rightClick;
@@ -373,17 +373,17 @@ namespace TagPan
         {
             TreeNode newOne = new TreeNode();
             List<string> _branchName = _parentNode.FullPath.Split(new char[] { '\\' }).Where(x => x != "project").ToList();
-            DS.TagNode oData;
+            TagNode oData;
             if (_branchName.Count > 0)
             {
-                oData = new DS.TagNode(joinBranchName(_branchName, delimiter) + "_" + _name);
+                oData = new TagNode(joinBranchName(_branchName, delimiter) + "_" + _name);
             }
             else
             {
-                oData = new DS.TagNode(_name);
+                oData = new TagNode(_name);
             }
             oData.objects.AddRange(_objects);
-            SimpleTreeNode<DS.TagNode> newOneData = new SimpleTreeNode<DS.TagNode>();
+            SimpleTreeNode<TagNode> newOneData = new SimpleTreeNode<TagNode>();
             newOneData.Value = oData;
             newOne.Text = _name;
             newOne.ContextMenuStrip = rightClick;
@@ -396,10 +396,10 @@ namespace TagPan
             ForceRedraw(null, null);
             return newOne;
         }
-        private SimpleTreeNode<DS.TagNode> appendNewNode(string _name)
+        private SimpleTreeNode<TagNode> appendNewNode(string _name)
         {
             TreeNode holdSel = TV.SelectedNode;
-            SimpleTreeNode<DS.TagNode> _bestnode = treeDataStructure.Children[0];
+            SimpleTreeNode<TagNode> _bestnode = treeDataStructure.Children[0];
             List<string> _nameElements = _name.Split(new char[] { '_' }).ToList();
             Queue<string> _queuedElements = new Queue<string>(_nameElements);
             string _lastElement;
@@ -413,7 +413,7 @@ namespace TagPan
                 }
                 _lastElement = _queuedElements.Dequeue();
                 _reconstructedName += _lastElement;
-                SimpleTreeNode<DS.TagNode> _testnode = getNodeDataFromBranch(_reconstructedName);
+                SimpleTreeNode<TagNode> _testnode = getNodeDataFromBranch(_reconstructedName);
                 if (_testnode != null)
                 {
                     _bestnode = _testnode;
@@ -441,41 +441,41 @@ namespace TagPan
         }
         private void CloneNode(int _originalObject, int _clonedObject)
         {
-            List<SimpleTreeNode<DS.TagNode>> originalTags = treeDataStructure.GetEnumerable(TreeTraversalType.BreadthFirst, TreeTraversalDirection.TopDown).Where<SimpleTreeNode<DS.TagNode>>(x => x.Value.objects.Any(y => y == _originalObject)).ToList();
-            foreach (SimpleTreeNode<DS.TagNode> _node in originalTags)
+            List<SimpleTreeNode<TagNode>> originalTags = treeDataStructure.GetEnumerable(TreeTraversalType.BreadthFirst, TreeTraversalDirection.TopDown).Where<SimpleTreeNode<TagNode>>(x => x.Value.objects.Any(y => y == _originalObject)).ToList();
+            foreach (SimpleTreeNode<TagNode> _node in originalTags)
             {
                 _node.Value.objects.Add(_clonedObject);
             }
             SelectionEvent(this, new TypedEventArg<List<int>>(selectedObjects.ToList()));
             ForceRedraw(null, null);
         }
-        private void ConcateneNodes(SimpleTreeNode<DS.TagNode> _dragedNode, SimpleTreeNode<DS.TagNode> _targetNode)
+        private void ConcateneNodes(SimpleTreeNode<TagNode> _dragedNode, SimpleTreeNode<TagNode> _targetNode)
         {
             // find common label
             string toCut = _dragedNode.Parent.Value.label;
             string toAdd = _targetNode.Parent.Value.label;
 
-            List<SimpleTreeNode<DS.TagNode>> nodesToChange = _dragedNode.GetNodeList();
-            foreach (SimpleTreeNode<DS.TagNode> _node in nodesToChange)
+            List<SimpleTreeNode<TagNode>> nodesToChange = _dragedNode.GetNodeList();
+            foreach (SimpleTreeNode<TagNode> _node in nodesToChange)
             {
                 string newName = _node.Value.label.Replace(toCut, toAdd);
                 UIToData.Remove(getNodeVisual(_node));
                 appendNewNode(newName, _node.Value.objects.ToList());
             }
         }
-        private SimpleTreeNode<DS.TagNode> getNodeDataFromBranch(string _branch)
+        private SimpleTreeNode<TagNode> getNodeDataFromBranch(string _branch)
         {
-            SimpleTreeNode<DS.TagNode> _dnode = treeDataStructure.GetEnumerable(TreeTraversalType.BreadthFirst, TreeTraversalDirection.TopDown).First<SimpleTreeNode<DS.TagNode>>(x => x.Value.label == _branch);
+            SimpleTreeNode<TagNode> _dnode = treeDataStructure.GetEnumerable(TreeTraversalType.BreadthFirst, TreeTraversalDirection.TopDown).First<SimpleTreeNode<TagNode>>(x => x.Value.label == _branch);
             return _dnode;
         }
         public List<string> getObjectTags(int _obj)  //used in fastInfo
         {
-            List<string> _tags = treeDataStructure.GetEnumerable(TreeTraversalType.BreadthFirst, TreeTraversalDirection.TopDown).Where<SimpleTreeNode<DS.TagNode>>(x => x.Value.objects.Any(y => y == _obj)).Select(x => x.Value.label).ToList();
+            List<string> _tags = treeDataStructure.GetEnumerable(TreeTraversalType.BreadthFirst, TreeTraversalDirection.TopDown).Where<SimpleTreeNode<TagNode>>(x => x.Value.objects.Any(y => y == _obj)).Select(x => x.Value.label).ToList();
             return _tags;
         }
-        private List<SimpleTreeNode<DS.TagNode>> getHighestNodesInSelection(int _numberOfSwatches)
+        private List<SimpleTreeNode<TagNode>> getHighestNodesInSelection(int _numberOfSwatches)
         {
-            List<SimpleTreeNode<DS.TagNode>> _hnodes = getSelectedNodesData().OrderBy(x => x.Depth).Take(_numberOfSwatches).ToList();
+            List<SimpleTreeNode<TagNode>> _hnodes = getSelectedNodesData().OrderBy(x => x.Depth).Take(_numberOfSwatches).ToList();
             return _hnodes;
         }
         #endregion
@@ -574,12 +574,12 @@ namespace TagPan
         private void AddShortcutTag(object sender, EventArgs e)
         {
             List<int> objsInNodes = getCommonObjects();
-            List<SimpleTreeNode<DS.TagNode>> _dnodes = new List<SimpleTreeNode<DS.TagNode>>();
+            List<SimpleTreeNode<TagNode>> _dnodes = new List<SimpleTreeNode<TagNode>>();
             foreach (TreeNode _tnode in TV.SelectedNodes)
             {
                 _dnodes.Add(getNodeData(_tnode));
             }
-            SimpleTreeNode<DS.TagNode> _dnode = _dnodes.First(x => x.Depth == _dnodes.Max(y => y.Depth));
+            SimpleTreeNode<TagNode> _dnode = _dnodes.First(x => x.Depth == _dnodes.Max(y => y.Depth));
             string shortcutName = _dnodes.Where(x => x != _dnode).First().Value.label;
             TreeNode _vnode = getNodeVisual(_dnode);
             appendNewNode(shortcutName, _vnode, objsInNodes);
@@ -653,7 +653,7 @@ namespace TagPan
         private void DeleteTag(object sender, System.EventArgs e)
         {
 
-            SimpleTreeNode<DS.TagNode> _dnode = getNodeData(TV.SelectedNode);
+            SimpleTreeNode<TagNode> _dnode = getNodeData(TV.SelectedNode);
             TreeNode _tnode = TV.SelectedNode;
             List<string> _fullPaths = _tnode.GetNodeList().Select(x => x.FullPath).ToList();
             List<string> _tagNames = new List<string>();
@@ -685,10 +685,10 @@ namespace TagPan
         }
         #endregion
         #region Load & save
-        public void LoadData(List<SimpleTreeNode<DS.TagNode>> _data)
+        public void LoadData(List<SimpleTreeNode<TagNode>> _data)
         {
-            SimpleTreeNode<DS.TagNode> Project = new SimpleTreeNode<DS.TagNode>();
-            Project.Value = new DS.TagNode("project");
+            SimpleTreeNode<TagNode> Project = new SimpleTreeNode<TagNode>();
+            Project.Value = new TagNode("project");
             treeDataStructure.Children.Add(Project);
             TreeNode _node = new TreeNode(Project.Value.label);
             _node.ContextMenuStrip = rightClick;
@@ -696,15 +696,15 @@ namespace TagPan
             UIToData.Add(_node, Project.Value.ID);
             TreePopulate(_data);
         }
-        public TypedEventArg<KeyValuePair<List<DS.TagNode>, List<SimpleTreeNode<DS.TagNode>>>> GetDataForSave()
+        public TypedEventArg<KeyValuePair<List<TagNode>, List<SimpleTreeNode<TagNode>>>> GetDataForSave()
         {
-            List<DS.TagNode> _nodes = new List<DS.TagNode>();
-            List<SimpleTreeNode<DS.TagNode>> _allnodes = treeDataStructure.GetEnumerable(TreeTraversalType.BreadthFirst, TreeTraversalDirection.TopDown).Where(x => x.Value.label != "root" && x.Value.label != "project").ToList();
-            foreach (SimpleTreeNode<DS.TagNode> _dnode in _allnodes)
+            List<TagNode> _nodes = new List<TagNode>();
+            List<SimpleTreeNode<TagNode>> _allnodes = treeDataStructure.GetEnumerable(TreeTraversalType.BreadthFirst, TreeTraversalDirection.TopDown).Where(x => x.Value.label != "root" && x.Value.label != "project").ToList();
+            foreach (SimpleTreeNode<TagNode> _dnode in _allnodes)
             {
                 _nodes.Add(_dnode.Value);
             }
-            return new TypedEventArg<KeyValuePair<List<DS.TagNode>, List<SimpleTreeNode<DS.TagNode>>>>(new KeyValuePair<List<DS.TagNode>, List<SimpleTreeNode<DS.TagNode>>>(_nodes, treeDataStructure.Children.ToList()));
+            return new TypedEventArg<KeyValuePair<List<TagNode>, List<SimpleTreeNode<TagNode>>>>(new KeyValuePair<List<TagNode>, List<SimpleTreeNode<TagNode>>>(_nodes, treeDataStructure.Children.ToList()));
         }
         public List<ReadWriteKeyPair> CreateTemplateData()
         {
@@ -737,10 +737,10 @@ namespace TagPan
         {
             SelectionEvent(null, new TypedEventArg<List<int>>(selectedObjects.ToList()));
         }
-        public SimpleTreeNode<DS.TagNode> appendNewNode(string _name, List<int> _objects)  //public for fastTag
+        public SimpleTreeNode<TagNode> appendNewNode(string _name, List<int> _objects)  //public for fastTag
         {
             TreeNode holdSel = TV.SelectedNode;
-            SimpleTreeNode<DS.TagNode> _bestnode = treeDataStructure.Children[0];
+            SimpleTreeNode<TagNode> _bestnode = treeDataStructure.Children[0];
             List<string> _nameElements = _name.Split(new char[] { '_' }).ToList();
             Queue<string> _queuedElements = new Queue<string>(_nameElements);
             string _lastElement;
@@ -754,7 +754,7 @@ namespace TagPan
                 }
                 _lastElement = _queuedElements.Dequeue();
                 _reconstructedName += _lastElement;
-                SimpleTreeNode<DS.TagNode> _testnode = getNodeDataFromBranch(_reconstructedName);
+                SimpleTreeNode<TagNode> _testnode = getNodeDataFromBranch(_reconstructedName);
                 if (_testnode != null)
                 {
                     _bestnode = _testnode;
@@ -819,8 +819,8 @@ namespace TagPan
         {
             foreach (Int32 _toDel in _toDels)
             {
-                var nodeInDel = treeDataStructure.GetNodeList().Where<SimpleTreeNode<DS.TagNode>>(x => x.Value.objects.Contains(_toDel)).ToList<SimpleTreeNode<DS.TagNode>>();
-                foreach (SimpleTreeNode<DS.TagNode> lst in nodeInDel)
+                var nodeInDel = treeDataStructure.GetNodeList().Where<SimpleTreeNode<TagNode>>(x => x.Value.objects.Contains(_toDel)).ToList<SimpleTreeNode<TagNode>>();
+                foreach (SimpleTreeNode<TagNode> lst in nodeInDel)
                 {
                     lst.Value.objects.Remove(_toDel);
                 }
