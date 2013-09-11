@@ -166,7 +166,7 @@ namespace TagPan
         }        
         private void TreePopulate(SimpleTreeNode<DS.TagNode> _dnode)
         {
-            appendNewNode(_dnode.Value.label, _dnode.Value.objects);
+            appendNewNode(_dnode.Value.label, _dnode.Value.objects.ToList());
             TreePopulate(_dnode.Children.ToList());
         }
         private void TreePopulate(List<SimpleTreeNode<DS.TagNode>> _dnodes)
@@ -328,7 +328,7 @@ namespace TagPan
             }
             foreach (TreeNode _node in _nodes)
             {
-                objsInNodes.Add(getNodeData(_node).Value.objects);
+                objsInNodes.Add(getNodeData(_node).Value.objects.ToList());
             }
             List<int> commonObjects = objsInNodes.IntersectNonEmpty().ToList();
             return commonObjects;
@@ -460,7 +460,7 @@ namespace TagPan
             {
                 string newName = _node.Value.label.Replace(toCut, toAdd);
                 UIToData.Remove(getNodeVisual(_node));
-                appendNewNode(newName, _node.Value.objects);
+                appendNewNode(newName, _node.Value.objects.ToList());
             }
         }
         private SimpleTreeNode<DS.TagNode> getNodeDataFromBranch(string _branch)
@@ -483,7 +483,7 @@ namespace TagPan
         private void ApplyTag(object sender, System.EventArgs e)
         {
             getNodeData(TV.SelectedNode).Value.objects.AddRange(selectedObjects);
-            getNodeData(TV.SelectedNode).Value.objects = getNodeData(TV.SelectedNode).Value.objects.Distinct().ToList();
+            getNodeData(TV.SelectedNode).Value.objects = new ObservableCollection<int>( getNodeData(TV.SelectedNode).Value.objects.Distinct().ToList());
             selectedObjects.RaiseCollectionChanged();
             ForceRedraw(null, null);
         }
@@ -546,7 +546,7 @@ namespace TagPan
         }
         private void RemoveTag(object sender, System.EventArgs e)
         {
-            List<int> objsInNode = getNodeData(TV.SelectedNode).Value.objects;
+            List<int> objsInNode = getNodeData(TV.SelectedNode).Value.objects.ToList();
             for (int i = 0; i < objsInNode.Count; i++)
             {
                 foreach (int obj in selectedObjects)
