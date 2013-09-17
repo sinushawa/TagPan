@@ -1,7 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Express 2012 for Windows Desktop
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TagPan", "TagPan\TagPan.csproj", "{8CEA234B-0EB7-4A90-9DD3-29C04F3FFAE7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TagPanTest", "TagPanTest\TagPanTest.csproj", "{DDC2DFD4-2838-4FCF-A107-53DD190B0778}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,6 +25,16 @@ Global
 		{8CEA234B-0EB7-4A90-9DD3-29C04F3FFAE7}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{8CEA234B-0EB7-4A90-9DD3-29C04F3FFAE7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{8CEA234B-0EB7-4A90-9DD3-29C04F3FFAE7}.Release|x86.ActiveCfg = Release|Any CPU
+		{DDC2DFD4-2838-4FCF-A107-53DD190B0778}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDC2DFD4-2838-4FCF-A107-53DD190B0778}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDC2DFD4-2838-4FCF-A107-53DD190B0778}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{DDC2DFD4-2838-4FCF-A107-53DD190B0778}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{DDC2DFD4-2838-4FCF-A107-53DD190B0778}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DDC2DFD4-2838-4FCF-A107-53DD190B0778}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDC2DFD4-2838-4FCF-A107-53DD190B0778}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDC2DFD4-2838-4FCF-A107-53DD190B0778}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{DDC2DFD4-2838-4FCF-A107-53DD190B0778}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{DDC2DFD4-2838-4FCF-A107-53DD190B0778}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

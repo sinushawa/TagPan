@@ -166,7 +166,7 @@ namespace TagPan
         }        
         private void TreePopulate(SimpleTreeNode<TagNode> _dnode)
         {
-            appendNewNode(_dnode.Value.label, _dnode.Value.objects.ToList());
+            appendNewNode(_dnode.Value.Name, _dnode.Value.objects.ToList());
             TreePopulate(_dnode.Children.ToList());
         }
         private void TreePopulate(List<SimpleTreeNode<TagNode>> _dnodes)
@@ -191,8 +191,8 @@ namespace TagPan
             SimpleTreeNode<TagNode> _targetData = getNodeData(_targetNode);
             if (_targetNode != _dragedNode)
             {
-                string _dragedParticular = _dragedData.Value.label.Split(new char[] { '_' }).Last();
-                string _targetParticular = _targetData.Value.label.Split(new char[] { '_' }).Last();
+                string _dragedParticular = _dragedData.Value.Name.Split(new char[] { '_' }).Last();
+                string _targetParticular = _targetData.Value.Name.Split(new char[] { '_' }).Last();
                 if (_dragedParticular.ToLower() != _targetParticular.ToLower())
                 {
                     _dragedData.Parent.Children.Remove(_dragedData);
@@ -200,7 +200,7 @@ namespace TagPan
                     _dragedNode.Parent.Nodes.Remove(_dragedNode);
                     _targetNode.Nodes.Add(_dragedNode);
                     List<string> _branchName=_dragedNode.FullPath.Split(new char[] { '\\' }).Where(x => x != "project").ToList();
-                    _dragedData.Value.label = joinBranchName(_branchName, delimiter);
+                    _dragedData.Value.Name = joinBranchName(_branchName, delimiter);
                 }
                 else
                 {
@@ -248,10 +248,10 @@ namespace TagPan
                 List<KeyValuePair<string, string>> _NotifyMaxContainer = new List<KeyValuePair<string, string>>();
                 foreach (SimpleTreeNode<TagNode> _dnode in nodesToRelabel)
                 {
-                    string _previousTag = _dnode.Value.label;
+                    string _previousTag = _dnode.Value.Name;
                     List<string> _branchName = getNodeVisual(_dnode).FullPath.Split(new char[] { '\\' }).Where(x => x != "project").ToList();
-                    _dnode.Value.label = joinBranchName(_branchName, delimiter);
-                    KeyValuePair<string, string> _keyPair = new KeyValuePair<string, string>(_previousTag, _dnode.Value.label);
+                    _dnode.Value.Name = joinBranchName(_branchName, delimiter);
+                    KeyValuePair<string, string> _keyPair = new KeyValuePair<string, string>(_previousTag, _dnode.Value.Name);
                     _NotifyMaxContainer.Add(_keyPair);
                 }
                 RenameTagEvent(null, new TypedEventArg<List<KeyValuePair<string, string>>>(_NotifyMaxContainer));
@@ -452,25 +452,25 @@ namespace TagPan
         private void ConcateneNodes(SimpleTreeNode<TagNode> _dragedNode, SimpleTreeNode<TagNode> _targetNode)
         {
             // find common label
-            string toCut = _dragedNode.Parent.Value.label;
-            string toAdd = _targetNode.Parent.Value.label;
+            string toCut = _dragedNode.Parent.Value.Name;
+            string toAdd = _targetNode.Parent.Value.Name;
 
             List<SimpleTreeNode<TagNode>> nodesToChange = _dragedNode.GetNodeList();
             foreach (SimpleTreeNode<TagNode> _node in nodesToChange)
             {
-                string newName = _node.Value.label.Replace(toCut, toAdd);
+                string newName = _node.Value.Name.Replace(toCut, toAdd);
                 UIToData.Remove(getNodeVisual(_node));
                 appendNewNode(newName, _node.Value.objects.ToList());
             }
         }
         private SimpleTreeNode<TagNode> getNodeDataFromBranch(string _branch)
         {
-            SimpleTreeNode<TagNode> _dnode = treeDataStructure.GetEnumerable(TreeTraversalType.BreadthFirst, TreeTraversalDirection.TopDown).First<SimpleTreeNode<TagNode>>(x => x.Value.label == _branch);
+            SimpleTreeNode<TagNode> _dnode = treeDataStructure.GetEnumerable(TreeTraversalType.BreadthFirst, TreeTraversalDirection.TopDown).First<SimpleTreeNode<TagNode>>(x => x.Value.Name == _branch);
             return _dnode;
         }
         public List<string> getObjectTags(int _obj)  //used in fastInfo
         {
-            List<string> _tags = treeDataStructure.GetEnumerable(TreeTraversalType.BreadthFirst, TreeTraversalDirection.TopDown).Where<SimpleTreeNode<TagNode>>(x => x.Value.objects.Any(y => y == _obj)).Select(x => x.Value.label).ToList();
+            List<string> _tags = treeDataStructure.GetEnumerable(TreeTraversalType.BreadthFirst, TreeTraversalDirection.TopDown).Where<SimpleTreeNode<TagNode>>(x => x.Value.objects.Any(y => y == _obj)).Select(x => x.Value.Name).ToList();
             return _tags;
         }
         private List<SimpleTreeNode<TagNode>> getHighestNodesInSelection(int _numberOfSwatches)
@@ -580,7 +580,7 @@ namespace TagPan
                 _dnodes.Add(getNodeData(_tnode));
             }
             SimpleTreeNode<TagNode> _dnode = _dnodes.First(x => x.Depth == _dnodes.Max(y => y.Depth));
-            string shortcutName = _dnodes.Where(x => x != _dnode).First().Value.label;
+            string shortcutName = _dnodes.Where(x => x != _dnode).First().Value.Name;
             TreeNode _vnode = getNodeVisual(_dnode);
             appendNewNode(shortcutName, _vnode, objsInNodes);
         }
@@ -690,7 +690,7 @@ namespace TagPan
             SimpleTreeNode<TagNode> Project = new SimpleTreeNode<TagNode>();
             Project.Value = new TagNode("project");
             treeDataStructure.Children.Add(Project);
-            TreeNode _node = new TreeNode(Project.Value.label);
+            TreeNode _node = new TreeNode(Project.Value.Name);
             _node.ContextMenuStrip = rightClick;
             TV.Nodes.Add(_node);
             UIToData.Add(_node, Project.Value.ID);
@@ -699,7 +699,7 @@ namespace TagPan
         public TypedEventArg<KeyValuePair<List<TagNode>, List<SimpleTreeNode<TagNode>>>> GetDataForSave()
         {
             List<TagNode> _nodes = new List<TagNode>();
-            List<SimpleTreeNode<TagNode>> _allnodes = treeDataStructure.GetEnumerable(TreeTraversalType.BreadthFirst, TreeTraversalDirection.TopDown).Where(x => x.Value.label != "root" && x.Value.label != "project").ToList();
+            List<SimpleTreeNode<TagNode>> _allnodes = treeDataStructure.GetEnumerable(TreeTraversalType.BreadthFirst, TreeTraversalDirection.TopDown).Where(x => x.Value.Name != "root" && x.Value.Name != "project").ToList();
             foreach (SimpleTreeNode<TagNode> _dnode in _allnodes)
             {
                 _nodes.Add(_dnode.Value);
