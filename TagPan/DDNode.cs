@@ -13,6 +13,18 @@ namespace TagPan
         public DDNode()
         {
             Children = new ObservableCollection<DDNode>();
+            Children.CollectionChanged += Children_CollectionChanged;
+        }
+
+        private void Children_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+            {
+                foreach (DDNode _node in e.NewItems)
+                {
+                    _node.Parent = this;
+                }
+            }
         }
 
         public void OnInsert(int index, object obj)
@@ -23,14 +35,12 @@ namespace TagPan
                 foreach (var item in content.Items.Reverse())
                 {
                     DDNode oldNode = (DDNode)item;
-                    DDNode newNode = new DDNode();
-                    newNode.Name = string.Format("Copy of {0}", oldNode.Name.Replace(" (Drag Allowed)", string.Empty));
-                    Children.Insert(index, newNode);
+                    if (oldNode != this)
+                    {
+                        oldNode.Parent.Children.Remove(oldNode);
+                        Children.Insert(index, oldNode);
+                    }
                 }
-            }
-            else
-            {
-                Children.Insert(index, new DDNode() { Name = "New node" });
             }
         }
 
@@ -68,14 +78,12 @@ namespace TagPan
                 foreach (var item in content.Items.Reverse())
                 {
                     DDNode oldNode = (DDNode)item;
-                    DDNode newNode = new DDNode();
-                    newNode.Name = string.Format("Copy of {0}", oldNode.Name.Replace(" (Drag Allowed)", string.Empty));
-                    Children.Add(newNode);
+                    if (oldNode != this)
+                    {
+                        oldNode.Parent.Children.Remove(oldNode);
+                        Children.Add(oldNode);
+                    }
                 }
-            }
-            else
-            {
-                Children.Add(new DDNode() { Name = "New node" });
             }
         }
 
@@ -93,9 +101,26 @@ namespace TagPan
 
         #region Public Properties
 
-        public ObservableCollection<DDNode> Children { get; set; }
+        private ObservableCollection<DDNode> children;
+        public ObservableCollection<DDNode> Children 
+        {
+            get { return children; }
+            set { children = value; }
+        }
 
-        public string Name { get; set; }
+        private string name;
+        public string Name
+        {
+            get { return name; }
+            set { name = value; }
+        }
+
+        private DDNode parent;
+        public DDNode Parent
+        {
+            get { return parent; }
+            set { parent = value; }
+        }
         #endregion
 
         #region Public Methods

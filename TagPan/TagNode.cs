@@ -14,7 +14,13 @@ namespace TagPan
           get { return _ID; }
           set { _ID = value; }
         }
-        public TagPan.ObservableCollection<Int32> objects;
+        private TagPan.ObservableCollection<Int32> objects;
+        public TagPan.ObservableCollection<Int32> Objects
+        {
+            get { return objects; }
+            set { objects = value; }
+        }
+
         public TagPan.ObservableCollection<string> shortcuts;
         public System.Drawing.Color wireColor;
 

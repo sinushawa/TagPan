@@ -111,6 +111,7 @@
     <Compile Include="FastPan.xaml.cs">
       <DependentUpon>FastPan.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ValueConverters.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="FastPanHost.resx">
@@ -129,13 +130,13 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="ItemTemplate_Node.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="PathsAndGradients.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="TreeItem_Template.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

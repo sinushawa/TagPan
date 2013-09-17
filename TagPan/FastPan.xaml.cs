@@ -36,9 +36,13 @@ namespace TagPan
         public void LoadSource()
         {
             root = new TagNode("root");
+            root.Objects.Add(0);
             TagNode firstchild = new TagNode("project");
+            firstchild.Objects.Add(2);
             TagNode leafOne = new TagNode("leaf");
+            leafOne.Objects.Add(165);
             TagNode leafTwo = new TagNode("two");
+            leafTwo.Objects.Add(5);
             firstchild.Children.Add(leafOne);
             firstchild.Children.Add(leafTwo);
             root.Children.Add(firstchild);
