@@ -83,7 +83,7 @@ namespace TagPan
 				SimpleTreeNode<TagNode> simpleTreeNode = this.RetrieveNodeDataFromTag(autoCompleteBox.Text);
 				if (simpleTreeNode != null)
 				{
-					this._currentContainer.content.Add(new ConsoleStringSelElement(autoCompleteBox.Text, simpleTreeNode.Value.objects.ToList()));
+					this._currentContainer.content.Add(new ConsoleStringSelElement(autoCompleteBox.Text, simpleTreeNode.Value.objects));
 				}
                 autoCompleteBox.Text = "";
 				this._currentContainer = this._currentContainer.parent;
@@ -112,7 +112,7 @@ namespace TagPan
 				{
 					if (simpleTreeNode != null)
 					{
-						this._currentContainer.content.Add(new ConsoleStringSelElement(autoCompleteBox.Text, simpleTreeNode.Value.objects.ToList()));
+						this._currentContainer.content.Add(new ConsoleStringSelElement(autoCompleteBox.Text, simpleTreeNode.Value.objects));
 						this._currentContainer.ops.Add(concat.addition);
 					}
 					else
@@ -153,7 +153,7 @@ namespace TagPan
 				{
 					if (simpleTreeNode != null)
 					{
-						this._currentContainer.content.Add(new ConsoleStringSelElement(autoCompleteBox.Text, simpleTreeNode.Value.objects.ToList()));
+						this._currentContainer.content.Add(new ConsoleStringSelElement(autoCompleteBox.Text, simpleTreeNode.Value.objects));
 						this._currentContainer.ops.Add(concat.substraction);
 					}
 					else
@@ -211,7 +211,7 @@ namespace TagPan
 				{
 					if (simpleTreeNode != null)
 					{
-						this._currentContainer.content.Add(new ConsoleStringSelElement(autoCompleteBox.Text, simpleTreeNode.Value.objects.ToList()));
+						this._currentContainer.content.Add(new ConsoleStringSelElement(autoCompleteBox.Text, simpleTreeNode.Value.objects));
 					}
 					if (!this.tagPan.additive)
 					{
@@ -229,7 +229,7 @@ namespace TagPan
 				{
 					if (simpleTreeNode != null)
 					{
-						this._currentContainer.content.Add(new ConsoleStringSelElement(autoCompleteBox.Text, simpleTreeNode.Value.objects.ToList()));
+						this._currentContainer.content.Add(new ConsoleStringSelElement(autoCompleteBox.Text, simpleTreeNode.Value.objects));
 						this._currentContainer.ops.Add(concat.intersection);
 					}
 					else
