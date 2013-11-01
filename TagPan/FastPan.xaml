@@ -11,7 +11,7 @@
 	<UserControl.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
-				<ResourceDictionary Source="ItemTemplate_Node.xaml"/>
+				<ResourceDictionary Source="TreeItem_Template.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 	</UserControl.Resources>
@@ -88,6 +88,6 @@
             </ResourceDictionary>
         </Grid.Resources>
         <Controls:TreeViewEx AutomationProperties.Name="TestApp2Tree" InsertionMarkerBrush="DarkGray"
-            ItemsSource="{Binding Path=Children}" DragTemplate="{DynamicResource dragTemplate}" ItemTemplate="{DynamicResource ItemTemplate_Node}" />
+            ItemsSource="{Binding Path=Children}" DragTemplate="{DynamicResource dragTemplate}" ItemTemplate="{DynamicResource TreeItem_Template}" />
     </Grid>
 </UserControl>

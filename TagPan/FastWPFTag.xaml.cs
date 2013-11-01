@@ -82,7 +82,7 @@ namespace TagPan
 				SimpleTreeNode<TagNode> simpleTreeNode = this.RetrieveNodeDataFromTag(autoCompleteBox.Text);
 				if (simpleTreeNode != null)
 				{
-					this._currentContainer.content.Add(new ConsoleStringSelElement(autoCompleteBox.Text, simpleTreeNode.Value.Objects.ToList()));
+					this._currentContainer.content.Add(new ConsoleStringSelElement(autoCompleteBox.Text, simpleTreeNode.Value.objects.ToList()));
 				}
                 autoCompleteBox.Text = "";
 				this._currentContainer = this._currentContainer.parent;
@@ -99,7 +99,7 @@ namespace TagPan
 					}
 					else
 					{
-						simpleTreeNode.Value.Objects.AddRange(this.tagPan.selectedObjects.ToList<int>());
+						simpleTreeNode.Value.objects.AddRange(this.tagPan.selectedObjects.ToList<int>());
 					}
 					if (this.tagPan.autoRename)
 					{
@@ -111,7 +111,7 @@ namespace TagPan
 				{
 					if (simpleTreeNode != null)
 					{
-						this._currentContainer.content.Add(new ConsoleStringSelElement(autoCompleteBox.Text, simpleTreeNode.Value.Objects.ToList()));
+						this._currentContainer.content.Add(new ConsoleStringSelElement(autoCompleteBox.Text, simpleTreeNode.Value.objects.ToList()));
 						this._currentContainer.ops.Add(concat.addition);
 					}
 					else
@@ -134,9 +134,9 @@ namespace TagPan
 							while (enumerator.MoveNext())
 							{
 								int _obj = enumerator.Current;
-								if (simpleTreeNode.Value.Objects.Any((int x) => x == _obj))
+								if (simpleTreeNode.Value.objects.Any((int x) => x == _obj))
 								{
-									simpleTreeNode.Value.Objects.Remove(_obj);
+									simpleTreeNode.Value.objects.Remove(_obj);
 								}
 							}
 						}
@@ -152,7 +152,7 @@ namespace TagPan
 				{
 					if (simpleTreeNode != null)
 					{
-						this._currentContainer.content.Add(new ConsoleStringSelElement(autoCompleteBox.Text, simpleTreeNode.Value.Objects.ToList()));
+						this._currentContainer.content.Add(new ConsoleStringSelElement(autoCompleteBox.Text, simpleTreeNode.Value.objects.ToList()));
 						this._currentContainer.ops.Add(concat.substraction);
 					}
 					else
@@ -172,7 +172,7 @@ namespace TagPan
 				}
 				else
 				{
-					simpleTreeNode.Value.Objects.AddRange(this.tagPan.selectedObjects.ToList<int>());
+					simpleTreeNode.Value.objects.AddRange(this.tagPan.selectedObjects.ToList<int>());
 				}
 				if (this.tagPan.autoRename)
 				{
@@ -200,7 +200,7 @@ namespace TagPan
 						}
 						foreach (SimpleTreeNode<TagNode> current in list)
 						{
-							this.tagPan.selectedObjects.AddRange(current.Value.Objects);
+							this.tagPan.selectedObjects.AddRange(current.Value.objects);
 						}
 						this.tagPan.selectedObjects.RaiseCollectionChanged();
 						this.tagPan.RaiseSelectionEvent();
@@ -210,7 +210,7 @@ namespace TagPan
 				{
 					if (simpleTreeNode != null)
 					{
-						this._currentContainer.content.Add(new ConsoleStringSelElement(autoCompleteBox.Text, simpleTreeNode.Value.Objects.ToList()));
+						this._currentContainer.content.Add(new ConsoleStringSelElement(autoCompleteBox.Text, simpleTreeNode.Value.objects.ToList()));
 					}
 					if (!this.tagPan.additive)
 					{
@@ -228,7 +228,7 @@ namespace TagPan
 				{
 					if (simpleTreeNode != null)
 					{
-						this._currentContainer.content.Add(new ConsoleStringSelElement(autoCompleteBox.Text, simpleTreeNode.Value.Objects.ToList()));
+						this._currentContainer.content.Add(new ConsoleStringSelElement(autoCompleteBox.Text, simpleTreeNode.Value.objects.ToList()));
 						this._currentContainer.ops.Add(concat.intersection);
 					}
 					else
@@ -243,7 +243,7 @@ namespace TagPan
 			{
 				if (this.consoleMode)
 				{
-					System.Collections.Generic.List<int> objects = this.RetrieveNodeDataContainsTag(autoCompleteBox.Text).SelectMany((SimpleTreeNode<TagNode> x) => x.Value.Objects).ToList<int>();
+					System.Collections.Generic.List<int> objects = this.RetrieveNodeDataContainsTag(autoCompleteBox.Text).SelectMany((SimpleTreeNode<TagNode> x) => x.Value.objects).ToList<int>();
 					this._currentContainer.content.Add(new ConsoleStringSelElement(autoCompleteBox.Text + "%", objects));
 				}
 				autoCompleteBox.Text="";
@@ -265,7 +265,7 @@ namespace TagPan
 				{
 					if (simpleTreeNode != null)
 					{
-						System.Collections.Generic.List<int> objects2 = simpleTreeNode.GetNodeList().SelectMany((SimpleTreeNode<TagNode> x) => x.Value.Objects).ToList<int>();
+						System.Collections.Generic.List<int> objects2 = simpleTreeNode.GetNodeList().SelectMany((SimpleTreeNode<TagNode> x) => x.Value.objects).ToList<int>();
 						this._currentContainer.content.Add(new ConsoleStringSelElement(autoCompleteBox.Text + "#", objects2));
 					}
 				}
