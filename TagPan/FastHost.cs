@@ -50,7 +50,7 @@ namespace TagPan
 			this.elementHost.Text = "elementHost1";
 			this.elementHost.Child = this.fastWPFTag_obj;
 			base.AutoScaleDimensions = new SizeF(6f, 13f);
-			//base.AutoScaleMode = AutoScaleMode.Font;
+			base.AutoScaleMode = AutoScaleMode.Font;
 			base.Controls.Add(this.elementHost);
 			this.MaximumSize = new Size(320, 30);
 			this.MinimumSize = new Size(320, 30);

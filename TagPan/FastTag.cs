@@ -9,6 +9,18 @@ using System.Windows.Forms;
 
 namespace TagPan
 {
+    public class TagAndNodeData
+    {
+        public string tag;
+        public Guid ID;
+
+        public TagAndNodeData(string _tag, Guid _ID)
+        {
+            tag = _tag;
+            ID = _ID;
+        }
+    }
+
     public partial class FastTag : UserControl
     {
         public event EventHandler ForceRedraw;
@@ -177,17 +189,6 @@ namespace TagPan
         private void TagBox_TextChanged(object sender, System.EventArgs e)
         {
             
-        }
-    }
-    public class TagAndNodeData
-    {
-        public string tag;
-        public Guid ID;
-
-        public TagAndNodeData(string _tag, Guid _ID)
-        {
-            tag = _tag;
-            ID = _ID;
         }
     }
 }

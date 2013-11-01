@@ -5,35 +5,31 @@ using System.Text;
 
 namespace DS
 {
-    public class TagNode: TagPan.DDNode
+    public class TagNode
     {
-        private Guid _ID;
-
-        public Guid ID
-        {
-          get { return _ID; }
-          set { _ID = value; }
-        }
+        public Guid ID;
         public string label;
-        public TagPan.ObservableCollection<Int32> objects;
-        public TagPan.ObservableCollection<string> shortcuts;
-        public System.Drawing.Color wireColor;
+        public bool isShortcut;
+        public List<Int32> objects;
 
         public TagNode()
         {
         }
-        public TagNode(string _label) : this(Guid.NewGuid(), _label, new List<int>())
+        public TagNode(string _label) : this(Guid.NewGuid(), _label, false, new List<int>())
         {
         }
-        public TagNode(string _label, List<Int32> _objects) : this(Guid.NewGuid(), _label, _objects)
+        public TagNode(string _label, bool _isShortcut) : this(Guid.NewGuid(), _label, _isShortcut, new List<int>())
         {
         }
-        public TagNode(Guid _ID, string _label, List<Int32> _objects)
+        public TagNode(string _label, List<Int32> _objects) : this(Guid.NewGuid(), _label, false, _objects)
+        {
+        }
+        public TagNode(Guid _ID, string _label, bool _isShortcut, List<Int32> _objects)
         {
             ID = _ID;
             label = _label;
-            objects = new TagPan.ObservableCollection<Int32>();
-            objects.AddRange(_objects);
+            isShortcut = _isShortcut;
+            objects = _objects;
         }
     }
 }
