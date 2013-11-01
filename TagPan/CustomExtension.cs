@@ -35,27 +35,27 @@ namespace TagPan
             ret.AddRange(node.Nodes.GetNodeList());
             return ret;
         }
-        public static List<SimpleTreeNode<TagNode>> GetNodeList(this SimpleTreeNode<TagNode> dnod)
+        public static List<SimpleTreeNode<DS.TagNode>> GetNodeList(this SimpleTreeNode<DS.TagNode> dnod)
         {
-            var ret = new List<SimpleTreeNode<TagNode>>();
+            var ret = new List<SimpleTreeNode<DS.TagNode>>();
             ret.Add(dnod);
             ret.AddRange(dnod.Children.GetNodeList());
             return ret;
         }
-        public static List<SimpleTreeNode<TagNode>> GetNodeList(this SimpleTreeNodeList<TagNode> dnodColl)
+        public static List<SimpleTreeNode<DS.TagNode>> GetNodeList(this SimpleTreeNodeList<DS.TagNode> dnodColl)
         {
-            var ret = new List<SimpleTreeNode<TagNode>>();
-            foreach (SimpleTreeNode<TagNode> _dnode in dnodColl)
+            var ret = new List<SimpleTreeNode<DS.TagNode>>();
+            foreach (SimpleTreeNode<DS.TagNode> _dnode in dnodColl)
             {
                 ret.Add(_dnode);
                 ret.AddRange(_dnode.Children.GetNodeList());
             }
             return ret;
         }
-        public static List<SimpleTreeNode<TagNode>> GetNodeList(this List<SimpleTreeNode<TagNode>> dnodColl)
+        public static List<SimpleTreeNode<DS.TagNode>> GetNodeList(this List<SimpleTreeNode<DS.TagNode>> dnodColl)
         {
-            var ret = new List<SimpleTreeNode<TagNode>>();
-            foreach (SimpleTreeNode<TagNode> _dnode in dnodColl)
+            var ret = new List<SimpleTreeNode<DS.TagNode>>();
+            foreach (SimpleTreeNode<DS.TagNode> _dnode in dnodColl)
             {
                 ret.Add(_dnode);
                 ret.AddRange(_dnode.Children.GetNodeList());

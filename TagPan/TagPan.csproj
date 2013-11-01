@@ -57,9 +57,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="console\ConsoleContainerElement.cs" />
-    <Compile Include="console\ConsoleElement.cs" />
-    <Compile Include="console\ConsoleStringSelElement.cs" />
+    <Compile Include="ConsoleContainerElement.cs" />
+    <Compile Include="ConsoleElement.cs" />
+    <Compile Include="ConsoleStringSelElement.cs" />
     <Compile Include="CustomExtension.cs" />
     <Compile Include="EnumHelper.cs" />
     <Compile Include="ExtensionObservableCollection.cs" />
@@ -73,7 +73,7 @@
       <SubType>Code</SubType>
       <DependentUpon>FastWPFTag.xaml</DependentUpon>
     </Compile>
-    <Compile Include="console\IConsoleSelElement.cs" />
+    <Compile Include="IConsoleSelElement.cs" />
     <Compile Include="MaxEditableTreeView.cs">
       <SubType>Component</SubType>
     </Compile>
