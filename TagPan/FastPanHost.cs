@@ -34,18 +34,16 @@ namespace TagPan
         private void InitializeComponent()
         {
             this.FastPanHostElement = new System.Windows.Forms.Integration.ElementHost();
-            this.fastPan_obj = new TagPan.FastPan();
             this.SuspendLayout();
             // 
-            // FastPanHostElement
+            // elementHost1
             // 
-            this.FastPanHostElement.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.FastPanHostElement.Location = new System.Drawing.Point(0, 0);
-            this.FastPanHostElement.Name = "FastPanHostElement";
-            this.FastPanHostElement.Size = new System.Drawing.Size(150, 150);
+            this.FastPanHostElement.Location = new System.Drawing.Point(3, 3);
+            this.FastPanHostElement.Name = "FastPanHost";
+            this.FastPanHostElement.Size = new System.Drawing.Size(144, 100);
             this.FastPanHostElement.TabIndex = 0;
             this.FastPanHostElement.Text = "FastPanHost";
-            this.FastPanHostElement.Child = this.fastPan_obj;
+            this.FastPanHostElement.Child = null;
             // 
             // FastPanHost
             // 

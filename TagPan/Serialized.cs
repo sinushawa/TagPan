@@ -5,7 +5,7 @@ using System.Text;
 
 namespace TagPan
 {
-    public class TagNode: DDNode
+    public class TagNode: TagPan.DDNode
     {
         private Guid _ID;
 
@@ -14,6 +14,7 @@ namespace TagPan
           get { return _ID; }
           set { _ID = value; }
         }
+        public string label;
         public TagPan.ObservableCollection<Int32> objects;
         public TagPan.ObservableCollection<string> shortcuts;
         public System.Drawing.Color wireColor;
@@ -30,11 +31,9 @@ namespace TagPan
         public TagNode(Guid _ID, string _label, List<Int32> _objects)
         {
             ID = _ID;
-            Name = _label;
+            label = _label;
             objects = new TagPan.ObservableCollection<Int32>();
             objects.AddRange(_objects);
-            AllowDrag = true;
-            AllowDrop = true;
         }
     }
 }

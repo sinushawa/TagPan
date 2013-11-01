@@ -11,55 +11,17 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Form=System.Windows.Forms;
 
 namespace TagPan
 {
-    public partial class FastPan : System.Windows.Controls.UserControl
+    /// <summary>
+    /// Interaction logic for UserControl1.xaml
+    /// </summary>
+    public partial class FastPan : UserControl
     {
-        private TagNode root;
-        private Point dragStartPoint;
-
-        public TagNode Root
-        {
-            get { return root; }
-            set { root = value; }
-        }
-        public Form.Form winParent;
-
         public FastPan()
         {
             InitializeComponent();
-            
-            LoadSource();
-        }
-        public void LoadSource()
-        {
-            root = new TagNode("root");
-            TagNode firstchild = new TagNode("project");
-            TagNode leafOne = new TagNode("leaf");
-            TagNode leafTwo = new TagNode("two");
-            firstchild.Children.Add(leafOne);
-            firstchild.Children.Add(leafTwo);
-            root.Children.Add(firstchild);
-            DataContext = root;
-        }
-        private void OnMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            dragStartPoint = e.GetPosition(null);
-        }
-
-        private void OnMouseMove(object sender, MouseEventArgs e)
-        {
-            Point mousePos = e.GetPosition(null);
-            Vector diff = dragStartPoint - mousePos;
-
-            if (e.LeftButton == MouseButtonState.Pressed
-                && (Math.Abs(diff.X) > SystemParameters.MinimumHorizontalDragDistance || Math.Abs(diff.Y) > SystemParameters.MinimumVerticalDragDistance))
-            {
-                var frameworkElem = ((FrameworkElement)e.OriginalSource);
-                DragDrop.DoDragDrop(frameworkElem, new DataObject("Node", frameworkElem.DataContext), DragDropEffects.Move);
-            }
         }
     }
 }

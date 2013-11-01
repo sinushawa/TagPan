@@ -29,7 +29,7 @@ namespace TagPan
 			this.tagPan = _tagPan;
 			this._labelsIDPair = (
 				from x in this.tagPan.treeDataStructure.GetEnumerable(TreeTraversalType.BreadthFirst, TreeTraversalDirection.TopDown)
-				select new TagAndNodeData(x.Value.Name, x.Value.ID) into x
+				select new TagAndNodeData(x.Value.label, x.Value.ID) into x
 				where x.tag != "project" && x.tag != "root"
 				select x).ToList<TagAndNodeData>();
 			this.FastBox.ItemsSource=((
@@ -62,7 +62,7 @@ namespace TagPan
 		{
 			return (
 				from x in this.tagPan.treeDataStructure.GetNodeList()
-				where x.Value.Name.Contains(_tag)
+				where x.Value.label.Contains(_tag)
 				select x).ToList<SimpleTreeNode<TagNode>>();
 		}
 		private void FastBox_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)

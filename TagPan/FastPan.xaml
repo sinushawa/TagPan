@@ -8,13 +8,6 @@
              xmlns:local="clr-namespace:TagPan"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-	<UserControl.Resources>
-		<ResourceDictionary>
-			<ResourceDictionary.MergedDictionaries>
-				<ResourceDictionary Source="TreeItem_Template.xaml"/>
-			</ResourceDictionary.MergedDictionaries>
-		</ResourceDictionary>
-	</UserControl.Resources>
     <Grid>
         <Grid.Resources>
             <ResourceDictionary>
@@ -87,7 +80,5 @@
                 </DataTemplate>
             </ResourceDictionary>
         </Grid.Resources>
-        <Controls:TreeViewEx AutomationProperties.Name="TestApp2Tree" InsertionMarkerBrush="DarkGray"
-            ItemsSource="{Binding Path=Children}" DragTemplate="{DynamicResource dragTemplate}" ItemTemplate="{DynamicResource TreeItem_Template}" />
     </Grid>
 </UserControl>
